@@ -1,13 +1,24 @@
+using System.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/calc/add", (int a, int b) => {     return a + b; });
-app.MapGet("/calc/subtract", (int a, int b) => { return a - b; });
-app.MapGet("/calc/multiply", (int a, int b) => { return a * b; });
+app.MapGet("/calc/add", (double a, double b) => { return a + b; });
+app.MapGet("/calc/subtract", (double a, double b) => { return a - b; });
+app.MapGet("/calc/multiply", (double a, double b) => { return a * b; });
 
-app.MapGet("/calculator/{equation}", (String equation) => {
+app.MapGet("/calculator/{term}", (String term) => {
     DataTable dt = new DataTable();
-    var v = dt.Compute(equation, "");
-    return v; 
+    try
+    {
+        var result = dt.Compute(term, "");
+        return result;
+    }
+    catch (System.Data.SyntaxErrorException ex)
+    {
+        return "Term not solvable.";
+    }
+     
 });
+
 app.Run();
